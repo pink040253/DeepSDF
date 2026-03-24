@@ -1,3 +1,17 @@
+# import os, sys
+# from pathlib import Path
+# sys.path.insert(0, "/home/anfang/Desktop/DeepSDF/")  # Add the root directory of the project to the Python path
+
+# print("=== DEBUG extract_sdf ===")
+# print("executable:", sys.executable)
+# print("cwd:", os.getcwd())
+# print("file:", Path(__file__).resolve())
+# print("PYTHONPATH:", os.environ.get("PYTHONPATH"))
+# print("sys.path:")
+# for p in sys.path:
+#     print(" ", p)
+# print("=========================")
+
 import torch
 import os
 import model.model_sdf as sdf_model
@@ -46,6 +60,7 @@ def reconstruct_object(cfg, latent_code, obj_idx, model, coords_batches, grad_si
 
 def main(cfg):
     training_settings = read_params(cfg)
+    print(training_settings)
 
     # Load the model
     weights = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'], 'weights.pt')
@@ -87,5 +102,6 @@ if __name__ == '__main__':
     cfg_path = os.path.join(os.path.dirname(config_files.__file__), 'reconstruct_from_latent.yaml')
     with open(cfg_path, 'rb') as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
+    print(cfg)
 
     main(cfg)

@@ -118,6 +118,18 @@ def main(cfg):
     pointcloud_path = os.path.join(inference_dir, 'partial_pointcloud.npy')
     np.save(pointcloud_path, pointcloud)
 
+    # # ===== AF =====
+    # # 指向您先前整併好的檔案 (包含 coords 與 sdf_targets)
+    # merged_data_path = '/home/anfang/Desktop/TouchSDF/results/runs_touch_sdf/20_03_093114_231/completion_data_stage1_gt.pt' 
+    # data_dict = torch.load(merged_data_path)
+
+    # # 提取座標與對應的目標值
+    # # 這裡 coords 包含表面點與空間擾動點 
+    # pointcloud = data_dict['coords'].to(device) 
+    # sdf_gt = data_dict['sdf_targets'].to(device)
+    # print(f"Max: {pointcloud.max()}, Min: {pointcloud.min()}")
+    # # ===== AF =====
+
     # Generate torch tensors of zeros that has the same dimension as pointcloud
     pointcloud = torch.tensor(pointcloud, dtype=torch.float32).to(device)
     sdf_gt = torch.zeros_like(pointcloud[:, 0]).view(-1, 1).to(device)

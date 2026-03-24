@@ -20,14 +20,25 @@ def clamp(x, delta=torch.tensor([[0.1]]).to(device)):
     return minimum
 
 
-def SDFLoss_multishape(sdf, prediction, x_latent, sigma):
-    """Loss function introduced in the paper DeepSDF for multiple shapes."""
-    l1 = torch.mean(torch.abs(prediction - sdf))
-    l2 = sigma**2 * torch.mean(torch.linalg.norm(x_latent, dim=1, ord=2))
-    loss = l1 + l2
-    #print(f'Loss prediction: {l1:.3f}, Loss regulariser: {l2:.3f}')
-    return loss, l1, l2
+# def SDFLoss_multishape(sdf, prediction, x_latent, sigma):
+#     """Loss function introduced in the paper DeepSDF for multiple shapes."""
+#     l1 = torch.mean(torch.abs(prediction - sdf))
+#     l2 = sigma**2 * torch.mean(torch.linalg.norm(x_latent, dim=1, ord=2))
+#     loss = l1 + l2
+#     #print(f'Loss prediction: {l1:.3f}, Loss regulariser: {l2:.3f}')
+#     return loss, l1, l2
+def SDFLoss_multishape(sdf, prediction, latent_vecs, sigma=0.01):
+    # print("prediction:", prediction.shape, "sdf:", sdf.shape)
+    prediction = prediction.reshape(-1, 1)
+    sdf = sdf.reshape(-1, 1)
+    # print("prediction:", prediction.shape, "sdf:", sdf.shape)
 
+    assert prediction.shape == sdf.shape, (prediction.shape, sdf.shape)
+
+    l1 = torch.mean(torch.abs(prediction - sdf))
+    l2 = sigma ** 2 * torch.mean(torch.norm(latent_vecs, dim=1))
+    loss = l1 + l2
+    return loss, l1, l2
 
 def generate_latent_codes(latent_size, samples_dict):
     """Generate a random latent codes for each shape form a Gaussian distribution
